@@ -3,7 +3,7 @@
 > **Power your applications with EmblemVault's AI Agent Hustle API – the secure, intelligent assistant for crypto & web3.**
 
 [![npm version](https://img.shields.io/npm/v/hustle-incognito.svg)](https://www.npmjs.com/package/hustle-incognito)
-[![License](https://img.shields.io/npm/l/hustle-incognito.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.4-blue)](https://www.typescriptlang.org/)
 [![Maintainer](https://img.shields.io/badge/maintainer-genecyber-blue)](https://www.npmjs.com/~genecyber)
 
