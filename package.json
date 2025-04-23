@@ -1,5 +1,5 @@
 {
-  "name": "emblemvault-hustle-incognito",
+  "name": "hustle-incognito",
   "version": "0.1.0",
   "description": "SDK for interacting with the Emblem Vault Hustle Incognito Agent API",
   "author": "Emblem Vault",
@@ -44,7 +44,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/EmblemCompany/emblemvault-hustle-incognito.git"
+    "url": "git+https://github.com/EmblemCompany/hustle-incognito.git"
   },
   "keywords": [
     "emblemvault",
@@ -56,9 +56,9 @@
     "solana"
   ],
   "bugs": {
-    "url": "https://github.com/EmblemCompany/emblemvault-hustle-incognito/issues"
+    "url": "https://github.com/EmblemCompany/hustle-incognito/issues"
   },
-  "homepage": "https://github.com/EmblemCompany/emblemvault-hustle-incognito#readme",
+  "homepage": "https://github.com/EmblemCompany/hustle-incognito#readme",
   "devDependencies": {
     "@types/bun": "latest",
     "@types/node": "^20.11.25",

@@ -2,14 +2,14 @@
 
 > **Power your applications with EmblemVault's AI Agent Hustle API – the secure, intelligent assistant for crypto & web3.**
 
-[![npm version](https://img.shields.io/npm/v/emblemvault-hustle-incognito.svg)](https://www.npmjs.com/package/emblemvault-hustle-incognito)
-[![License](https://img.shields.io/npm/l/emblemvault-hustle-incognito.svg)](LICENSE)
+[![npm version](https://img.shields.io/npm/v/hustle-incognito.svg)](https://www.npmjs.com/package/hustle-incognito)
+[![License](https://img.shields.io/npm/l/hustle-incognito.svg)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.4-blue)](https://www.typescriptlang.org/)
 
 ## ✨ Build an AI-powered CLI in 10 lines
 
 ```typescript
-import { HustleIncognitoClient } from 'emblemvault-hustle-incognito';
+import { HustleIncognitoClient } from 'hustle-incognito';
 
 // Create client with your API key
 const client = new HustleIncognitoClient({
@@ -37,13 +37,13 @@ console.log(response.content);
 
 ```bash
 # Using npm
-npm install emblemvault-hustle-incognito
+npm install hustle-incognito
 
 # Using yarn
-yarn add emblemvault-hustle-incognito
+yarn add hustle-incognito
 
 # Using pnpm
-pnpm add emblemvault-hustle-incognito
+pnpm add hustle-incognito
 ```
 
 ## 🔑 Authentication
@@ -263,7 +263,7 @@ for await (const chunk of client.chatStream(
 ### Node.js (CommonJS)
 
 ```javascript
-const { HustleIncognitoClient } = require('emblemvault-hustle-incognito');
+const { HustleIncognitoClient } = require('hustle-incognito');
 
 const client = new HustleIncognitoClient({ apiKey: process.env.HUSTLE_API_KEY });
 // Use the client...
@@ -272,7 +272,7 @@ const client = new HustleIncognitoClient({ apiKey: process.env.HUSTLE_API_KEY })
 ### Node.js (ESM) / Modern JavaScript
 
 ```javascript
-import { HustleIncognitoClient } from 'emblemvault-hustle-incognito';
+import { HustleIncognitoClient } from 'hustle-incognito';
 
 const client = new HustleIncognitoClient({ apiKey: process.env.HUSTLE_API_KEY });
 // Use the client...
@@ -281,7 +281,7 @@ const client = new HustleIncognitoClient({ apiKey: process.env.HUSTLE_API_KEY })
 ### TypeScript
 
 ```typescript
-import { HustleIncognitoClient, ChatMessage } from 'emblemvault-hustle-incognito';
+import { HustleIncognitoClient, ChatMessage } from 'hustle-incognito';
 
 const client = new HustleIncognitoClient({ apiKey: process.env.HUSTLE_API_KEY });
 const messages: ChatMessage[] = [{ role: 'user', content: 'Hello' }];
@@ -293,7 +293,7 @@ const messages: ChatMessage[] = [{ role: 'user', content: 'Hello' }];
 ```typescript
 // pages/api/hustle.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { HustleIncognitoClient } from 'emblemvault-hustle-incognito';
+import { HustleIncognitoClient } from 'hustle-incognito';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const client = new HustleIncognitoClient({ 
@@ -312,7 +312,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 ### Browser (via bundler)
 
 ```typescript
-import { HustleIncognitoClient } from 'emblemvault-hustle-incognito';
+import { HustleIncognitoClient } from 'hustle-incognito';
 
 // NOTE: For security, you should proxy API requests through your backend
 // rather than including API keys in client-side code
@@ -330,8 +330,8 @@ const client = new HustleIncognitoClient({
 
 ```bash
 # Clone the repository
-git clone https://github.com/EmblemCompany/emblemvault-hustle-incognito.git
-cd emblemvault-hustle-incognito
+git clone https://github.com/EmblemCompany/hustle-incognito.git
+cd hustle-incognito
 
 # Install dependencies
 npm install

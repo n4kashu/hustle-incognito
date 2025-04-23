@@ -18,8 +18,8 @@ This document provides comprehensive information for developers working with the
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/EmblemCompany/emblemvault-hustle-incognito.git
-   cd emblemvault-hustle-incognito
+   git clone https://github.com/EmblemCompany/hustle-incognito.git
+   cd hustle-incognito
    ```
 
 2. **Install dependencies**
@@ -36,7 +36,7 @@ This document provides comprehensive information for developers working with the
 ## Project Structure
 
 ```
-emblemvault-hustle-incognito/
+hustle-incognito/
 ├── dist/               # Built output (generated)
 │   ├── cjs/            # CommonJS format
 │   └── esm/            # ES Modules format
@@ -266,17 +266,17 @@ npm publish
 ### Installation
 
 ```bash
-npm install emblemvault-hustle-incognito
+npm install hustle-incognito
 ```
 
 ### Basic Usage
 
 ```javascript
 // ESM
-import { HustleIncognitoClient } from 'emblemvault-hustle-incognito';
+import { HustleIncognitoClient } from 'hustle-incognito';
 
 // CommonJS
-const { HustleIncognitoClient } = require('emblemvault-hustle-incognito');
+const { HustleIncognitoClient } = require('hustle-incognito');
 
 // Initialize
 const client = new HustleIncognitoClient({
@@ -303,7 +303,7 @@ VAULT_ID=your_vault_id (optional)
 The SDK includes full TypeScript definitions:
 
 ```typescript
-import { HustleIncognitoClient, ChatMessage } from 'emblemvault-hustle-incognito';
+import { HustleIncognitoClient, ChatMessage } from 'hustle-incognito';
 
 const messages: ChatMessage[] = [
   { role: 'user', content: 'Hello' }
