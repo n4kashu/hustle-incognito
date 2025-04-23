@@ -5,6 +5,7 @@
 [![npm version](https://img.shields.io/npm/v/hustle-incognito.svg)](https://www.npmjs.com/package/hustle-incognito)
 [![License](https://img.shields.io/npm/l/hustle-incognito.svg)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.4-blue)](https://www.typescriptlang.org/)
+[![Maintainer](https://img.shields.io/badge/maintainer-genecyber-blue)](https://www.npmjs.com/~genecyber)
 
 ## ✨ Build an AI-powered CLI in 10 lines
 
