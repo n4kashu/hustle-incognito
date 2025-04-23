@@ -14,6 +14,7 @@ async function main() {
     // Parse command line arguments
     const args = process.argv.slice(2);
     const debugMode = args.includes('--debug');
+    const streamMode = args.includes('--stream');
     
     // Check for required environment variables
     const API_KEY = process.env.HUSTLE_API_KEY;
@@ -41,6 +42,50 @@ async function main() {
     // Store conversation history
     const messages = [];
     
+    // Stream the response from the API
+    async function streamResponse(messages) {
+      let fullText = '';
+      let toolCalls = [];
+      
+      process.stdout.write('\nAgent: ');
+      
+      for await (const chunk of client.chatStream({
+        vaultId: VAULT_ID,
+        messages,
+        processChunks: true
+      })) {
+        if ('type' in chunk) {
+          switch (chunk.type) {
+            case 'text':
+              process.stdout.write(chunk.value);
+              fullText += chunk.value;
+              break;
+              
+            case 'tool_call':
+              toolCalls.push(chunk.value);
+              break;
+              
+            case 'finish':
+              process.stdout.write('\n');
+              break;
+          }
+        }
+      }
+      
+      // Log tool usage if any
+      if (toolCalls.length > 0) {
+        console.log('\nTools used:');
+        toolCalls.forEach((tool, i) => {
+          console.log(`${i+1}. ${tool.toolName || 'Unknown tool'} (ID: ${tool.toolCallId || 'unknown'})`);
+          if (tool.args) {
+            console.log(`   Args: ${JSON.stringify(tool.args)}`);
+          }
+        });
+      }
+      
+      return fullText;
+    }
+    
     // Main chat function
     async function chat() {
       rl.question('\nYou: ', async (input) => {
@@ -54,30 +99,41 @@ async function main() {
         // Add user message to history
         messages.push({ role: 'user', content: input });
         
-        console.log('\nAgent is thinking...');
+        if (!streamMode) {
+          console.log('\nAgent is thinking...');
+        }
         
         try {
-          // Get response from the AI
-          const response = await client.chat(
-            messages,
-            { vaultId: VAULT_ID }
-          );
+          let assistantResponse;
           
-          console.log(`\nAgent: ${response.content}`);
-          
-          // Log tool usage if any
-          if (response.toolCalls && response.toolCalls.length > 0) {
-            console.log('\nTools used:');
-            response.toolCalls.forEach((tool, i) => {
-              console.log(`${i+1}. ${tool.toolName || 'Unknown tool'} (ID: ${tool.toolCallId || 'unknown'})`);
-              if (tool.args) {
-                console.log(`   Args: ${JSON.stringify(tool.args)}`);
-              }
-            });
+          if (streamMode) {
+            // Stream the response
+            assistantResponse = await streamResponse(messages);
+          } else {
+            // Get response from the AI (non-streaming)
+            const response = await client.chat(
+              messages,
+              { vaultId: VAULT_ID }
+            );
+            
+            console.log(`\nAgent: ${response.content}`);
+            
+            // Log tool usage if any
+            if (response.toolCalls && response.toolCalls.length > 0) {
+              console.log('\nTools used:');
+              response.toolCalls.forEach((tool, i) => {
+                console.log(`${i+1}. ${tool.toolName || 'Unknown tool'} (ID: ${tool.toolCallId || 'unknown'})`);
+                if (tool.args) {
+                  console.log(`   Args: ${JSON.stringify(tool.args)}`);
+                }
+              });
+            }
+            
+            assistantResponse = response.content;
           }
           
           // Add assistant response to history
-          messages.push({ role: 'assistant', content: response.content });
+          messages.push({ role: 'assistant', content: assistantResponse });
           
           // Continue the conversation
           chat();
@@ -92,9 +148,16 @@ async function main() {
     console.log('Welcome to Emblem Vault Hustle Incognito CLI!');
     console.log('Ask about Solana tokens, trading, or anything crypto-related.');
     console.log('Type "exit" or "quit" to end the conversation.\n');
+    
     if (debugMode || DEBUG) {
-      console.log('[DEBUG MODE ENABLED] - Timestamps will be shown with debug information\n');
+      console.log('[DEBUG MODE ENABLED] - Timestamps will be shown with debug information');
     }
+    
+    if (streamMode) {
+      console.log('[STREAM MODE ENABLED] - Responses will be streamed in real-time');
+    }
+    
+    console.log(''); // Empty line for better spacing
     chat();
   } catch (error) {
     console.error('Error initializing CLI:', error);

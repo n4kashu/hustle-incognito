@@ -148,6 +148,8 @@ The SDK includes comprehensive debugging capabilities.
 |--------|-------------|
 | `npm run example:cli` | Runs CLI example without debug |
 | `npm run example:cli:debug` | Runs CLI example with debug enabled |
+| `npm run example:cli:stream` | Runs CLI example with streaming responses |
+| `npm run example:cli:stream:debug` | Runs CLI example with both streaming and debug |
 
 ### Debug Output
 
@@ -163,6 +165,26 @@ Example:
 [2025-04-23T06:37:26.484Z] Emblem Vault Hustle Incognito SDK v0.1.0
 [2025-04-23T06:37:26.484Z] Using API endpoint: https://agenthustle.ai
 ```
+
+### Streaming Mode
+
+The CLI example supports streaming responses in real-time, which provides a more interactive experience:
+
+- **Standard Mode**: Responses are shown only after they are fully received
+- **Streaming Mode**: Responses appear character-by-character as they are generated
+
+To use streaming mode:
+```bash
+# Run with streaming enabled
+npm run example:cli:stream
+
+# Run with both streaming and debug enabled
+npm run example:cli:stream:debug
+```
+
+Command line flags:
+- `--stream`: Enables streaming mode
+- `--debug`: Enables debug logging with timestamps
 
 ## Version Management
 

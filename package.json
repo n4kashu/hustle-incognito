@@ -34,6 +34,8 @@
     "test:watch": "vitest",
     "example:cli": "node examples/simple-cli.js",
     "example:cli:debug": "node examples/simple-cli.js --debug",
+    "example:cli:stream": "node examples/simple-cli.js --stream",
+    "example:cli:stream:debug": "node examples/simple-cli.js --stream --debug",
     "lint": "eslint src/**/*.ts",
     "format": "prettier --write \"src/**/*.ts\"",
     "prepare": "npm run build",
