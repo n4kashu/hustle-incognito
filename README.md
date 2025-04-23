@@ -73,7 +73,7 @@ Receive typed, structured chunks for building interactive experiences:
 ```typescript
 // For UIs with streaming responses
 for await (const chunk of client.chatStream({ 
-  messages: [{ role: 'user', content: 'What projects are on Solana?' }],
+  messages: [{ role: 'user', content: 'Show me the top Solana tokens this week' }],
   vaultId: 'my-vault',
   processChunks: true 
 })) {
@@ -151,7 +151,7 @@ The API can execute multiple tools in a single conversation. For example, you ca
 ```typescript
 // Request that uses multiple tools
 const response = await client.chat([
-  { role: 'user', content: 'Show me trending tokens and do a rugcheck on BONK' }
+  { role: 'user', content: 'Check trending tokens and get token details for the top one' }
 ], { vaultId: 'my-vault' });
 
 // All tool calls are available in the response
@@ -169,7 +169,7 @@ For streaming interfaces, you can observe multiple tool calls in real-time:
 
 ```typescript
 for await (const chunk of client.chatStream({ 
-  messages: [{ role: 'user', content: 'Check trending tokens and analyze BONK' }],
+  messages: [{ role: 'user', content: 'Check trending tokens and get token details for the top one' }],
   vaultId: 'my-vault',
   processChunks: true 
 })) {
@@ -200,7 +200,7 @@ For streaming interfaces, you can observe tool activity in real-time:
 
 ```typescript
 for await (const chunk of client.chatStream({ 
-  messages: [{ role: 'user', content: 'Check the price of SOL' }],
+  messages: [{ role: 'user', content: 'Check the price of SOL in USDC' }],
   vaultId: 'my-vault',
   processChunks: true 
 })) {
