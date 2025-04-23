@@ -11,6 +11,10 @@ async function main() {
     // Load environment variables
     dotenv.config();
     
+    // Parse command line arguments
+    const args = process.argv.slice(2);
+    const debugMode = args.includes('--debug');
+    
     // Check for required environment variables
     const API_KEY = process.env.HUSTLE_API_KEY;
     const VAULT_ID = process.env.VAULT_ID || 'default';
@@ -24,7 +28,7 @@ async function main() {
     // Initialize the client
     const client = new HustleIncognitoClient({
       apiKey: API_KEY,
-      debug: process.env.DEBUG === 'true'
+      debug: debugMode || process.env.DEBUG === 'true'
     });
     
     // Create readline interface for user input
@@ -87,6 +91,9 @@ async function main() {
     console.log('Welcome to Emblem Vault Hustle Incognito CLI!');
     console.log('Ask about Solana tokens, trading, or anything crypto-related.');
     console.log('Type "exit" or "quit" to end the conversation.\n');
+    if (debugMode) {
+      console.log('[DEBUG MODE ENABLED] - Timestamps will be shown with debug information\n');
+    }
     chat();
   } catch (error) {
     console.error('Error initializing CLI:', error);

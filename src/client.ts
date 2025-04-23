@@ -49,8 +49,8 @@ export class HustleIncognitoClient {
     
     // Debug info
     if (this.debug) {
-      console.log(`Emblem Vault Hustle Incognito SDK v${this.sdkVersion}`);
-      console.log(`Using API endpoint: ${this.baseUrl}`);
+      console.log(`[${new Date().toISOString()}] Emblem Vault Hustle Incognito SDK v${this.sdkVersion}`);
+      console.log(`[${new Date().toISOString()}] Using API endpoint: ${this.baseUrl}`);
     }
   }
 
@@ -77,16 +77,16 @@ export class HustleIncognitoClient {
   ): Promise<ProcessedResponse | RawChunk[]> {
     // Implement override pattern
     if (overrideFunc && typeof overrideFunc === 'function') {
-      if (this.debug) console.log('Using override function for chat method');
+      if (this.debug) console.log(`[${new Date().toISOString()}] Using override function for chat method`);
       return await overrideFunc(this.apiKey, { messages, ...options });
     }
     
-    if (this.debug) console.log(`Sending chat request with ${messages.length} messages to vault ${options.vaultId}`);
+    if (this.debug) console.log(`[${new Date().toISOString()}] Sending chat request with ${messages.length} messages to vault ${options.vaultId}`);
     
     // Default implementation
     if (options.rawResponse) {
       // Return the raw chunks
-      if (this.debug) console.log('Raw response mode enabled, returning all chunks');
+      if (this.debug) console.log(`[${new Date().toISOString()}] Raw response mode enabled, returning all chunks`);
       const chunks: RawChunk[] = [];
       for await (const chunk of this.rawStream({
         vaultId: options.vaultId,
@@ -96,7 +96,7 @@ export class HustleIncognitoClient {
         slippageSettings: options.slippageSettings,
         safeMode: options.safeMode
       })) {
-        if (this.debug) console.log('Raw chunk:', JSON.stringify(chunk));
+        if (this.debug) console.log(`[${new Date().toISOString()}] Raw chunk:`, JSON.stringify(chunk));
         chunks.push(chunk as RawChunk);
       }
       return chunks;
@@ -168,7 +168,7 @@ export class HustleIncognitoClient {
   ): AsyncIterable<StreamChunk | RawChunk> {
     // Implement override pattern
     if (overrideFunc && typeof overrideFunc === 'function') {
-      if (this.debug) console.log('Using override function for chatStream method');
+      if (this.debug) console.log(`[${new Date().toISOString()}] Using override function for chatStream method`);
       // For custom stream handling, yield generator from override function
       yield* overrideFunc(this.apiKey, options);
       return;
@@ -176,16 +176,16 @@ export class HustleIncognitoClient {
     
     // If we're not processing chunks, just use rawStream
     if (options.processChunks === false) {
-      if (this.debug) console.log('Process chunks disabled, using raw stream');
+      if (this.debug) console.log(`[${new Date().toISOString()}] Process chunks disabled, using raw stream`);
       yield* this.rawStream(options);
       return;
     }
 
-    if (this.debug) console.log('Processing stream chunks into structured data');
+    if (this.debug) console.log(`[${new Date().toISOString()}] Processing stream chunks into structured data`);
     
     // Otherwise, process chunks into structured data
     for await (const chunk of this.rawStream(options)) {
-      if (this.debug) console.log('Processing chunk:', JSON.stringify(chunk));
+      if (this.debug) console.log(`[${new Date().toISOString()}] Processing chunk:`, JSON.stringify(chunk));
       
       switch (chunk.prefix) {
         case '0': // Text chunk
@@ -193,12 +193,12 @@ export class HustleIncognitoClient {
           break;
         
         case '9': // Tool call
-          if (this.debug) console.log('Found tool call:', JSON.stringify(chunk.data));
+          if (this.debug) console.log(`[${new Date().toISOString()}] Found tool call:`, JSON.stringify(chunk.data));
           yield { type: 'tool_call', value: chunk.data };
           break;
           
         case 'a': // Tool result
-          if (this.debug) console.log('Found tool result:', JSON.stringify(chunk.data));
+          if (this.debug) console.log(`[${new Date().toISOString()}] Found tool result:`, JSON.stringify(chunk.data));
           yield { type: 'tool_result', value: chunk.data };
           break;
           
@@ -227,7 +227,7 @@ export class HustleIncognitoClient {
               yield { type: 'path_info', value: chunk.data };
             }
           } catch (error) {
-            if (this.debug) console.error('Error processing path info:', error);
+            if (this.debug) console.error(`[${new Date().toISOString()}] Error processing path info:`, error);
           }
           break;
           
@@ -260,7 +260,7 @@ export class HustleIncognitoClient {
   ): AsyncIterable<RawChunk> {
     // Implement override pattern
     if (overrideFunc && typeof overrideFunc === 'function') {
-      if (this.debug) console.log('Using override function for rawStream method');
+      if (this.debug) console.log(`[${new Date().toISOString()}] Using override function for rawStream method`);
       // For custom stream handling, yield generator from override function
       yield* overrideFunc(this.apiKey, options);
       return;
@@ -268,28 +268,28 @@ export class HustleIncognitoClient {
     
     const requestBody = this.prepareRequestBody(options);
     if (this.debug) {
-      console.log('Prepared request body:', JSON.stringify(requestBody));
-      console.log(`Sending request to ${this.baseUrl}/api/chat`);
+      console.log(`[${new Date().toISOString()}] Prepared request body:`, JSON.stringify(requestBody));
+      console.log(`[${new Date().toISOString()}] Sending request to ${this.baseUrl}/api/chat`);
     }
     
     try {
       const response = await this.createRequest(requestBody);
-      if (this.debug) console.log(`Response status: ${response.status} ${response.statusText}`);
+      if (this.debug) console.log(`[${new Date().toISOString()}] Response status: ${response.status} ${response.statusText}`);
       
       const reader = response.body?.getReader();
       if (!reader) throw new Error('Stream reader not available');
 
-      if (this.debug) console.log('Starting to read stream');
+      if (this.debug) console.log(`[${new Date().toISOString()}] Starting to read stream`);
       
       while (true) {
         const { done, value } = await reader.read();
         if (done) {
-          if (this.debug) console.log('Stream complete');
+          if (this.debug) console.log(`[${new Date().toISOString()}] Stream complete`);
           break;
         }
 
         const text = new TextDecoder().decode(value);
-        if (this.debug) console.log('Raw stream data:', text);
+        if (this.debug) console.log(`[${new Date().toISOString()}] Raw stream data:`, text);
         
         const lines = text.split('\n');
 
@@ -304,21 +304,21 @@ export class HustleIncognitoClient {
             let parsedData;
             try {
               parsedData = JSON.parse(data);
-              if (this.debug) console.log(`Parsed JSON data for prefix ${prefix}:`, JSON.stringify(parsedData));
+              if (this.debug) console.log(`[${new Date().toISOString()}] Parsed JSON data for prefix ${prefix}:`, JSON.stringify(parsedData));
             } catch (e) {
               parsedData = data;
-              if (this.debug) console.log(`Non-JSON data for prefix ${prefix}:`, data);
+              if (this.debug) console.log(`[${new Date().toISOString()}] Non-JSON data for prefix ${prefix}:`, data);
             }
             
             yield { prefix, data: parsedData, raw: line };
           } catch (error) {
-            if (this.debug) console.error('Error parsing stream chunk:', error);
+            if (this.debug) console.error(`[${new Date().toISOString()}] Error parsing stream chunk:`, error);
             yield { prefix: 'error', data: line, raw: line };
           }
         }
       }
     } catch (error) {
-      if (this.debug) console.error('Error in rawStream:', error);
+      if (this.debug) console.error(`[${new Date().toISOString()}] Error in rawStream:`, error);
       yield { prefix: 'error', data: String(error), raw: String(error) };
       throw error;
     }
@@ -361,8 +361,8 @@ export class HustleIncognitoClient {
    */
   private async createRequest(requestBody: HustleRequest): Promise<Response> {
     if (this.debug) {
-      console.log(`Making POST request to ${this.baseUrl}/api/chat`);
-      console.log('Request headers:', JSON.stringify(this.getHeaders()));
+      console.log(`[${new Date().toISOString()}] Making POST request to ${this.baseUrl}/api/chat`);
+      console.log(`[${new Date().toISOString()}] Request headers:`, JSON.stringify(this.getHeaders()));
     }
     
     const response = await this.fetchImpl(`${this.baseUrl}/api/chat`, {
@@ -372,7 +372,7 @@ export class HustleIncognitoClient {
     });
 
     if (!response.ok) {
-      if (this.debug) console.error(`HTTP error: ${response.status} ${response.statusText}`);
+      if (this.debug) console.error(`[${new Date().toISOString()}] HTTP error: ${response.status} ${response.statusText}`);
       throw new Error(`HTTP error: ${response.status} ${response.statusText}`);
     }
 
