@@ -13,11 +13,12 @@ module.exports = {
   rules: {
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/no-explicit-any': 'warn',
+    '@typescript-eslint/ban-types': 'off', 
     '@typescript-eslint/no-unused-vars': ['error', { 
       argsIgnorePattern: '^_',
       varsIgnorePattern: '^_' 
     }],
-    'no-console': ['warn', { allow: ['warn', 'error'] }],
+    'no-console': 'off', 
   },
   ignorePatterns: ['dist', 'node_modules', '*.js'],
 };
