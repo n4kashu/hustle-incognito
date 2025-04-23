@@ -19,7 +19,7 @@ const client = new HustleIncognitoClient({
 
 // Get a response from the AI
 const response = await client.chat([
-  { role: 'user', content: 'What can you tell me about the current gas prices on Ethereum?' }
+  { role: 'user', content: 'What can you tell me about the current trending tokens on Solana?' }
 ], { vaultId: process.env.VAULT_ID });
 
 console.log(response.content);
@@ -203,7 +203,7 @@ for await (const chunk of client.chatStream({
 ```typescript
 // Get a complete response with tool calls and results
 const response = await client.chat([
-  { role: 'user', content: 'What is the current price of Ethereum?' }
+  { role: 'user', content: 'What is the current price of SOL in USD?' }
 ], { vaultId: 'my-vault' });
 
 // Tool calls and results are available in the response
@@ -215,7 +215,7 @@ For streaming interfaces, you can observe tool activity in real-time:
 
 ```typescript
 for await (const chunk of client.chatStream({ 
-  messages: [{ role: 'user', content: 'Check the price of SOL in USDC' }],
+  messages: [{ role: 'user', content: 'Check the price of SOL in USD' }],
   vaultId: 'my-vault',
   processChunks: true 
 })) {
