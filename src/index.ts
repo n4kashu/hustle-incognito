@@ -1,4 +1,4 @@
-console.log("Hello via Bun!");
+console.log('Hello via Bun!');
 
 // src/index.ts
 
@@ -13,5 +13,5 @@ export {
   HustleRequest,
   StreamOptions,
   ProcessedResponse,
-  RawChunk
+  RawChunk,
 } from './types.js';

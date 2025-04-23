@@ -179,23 +179,23 @@ export interface ToolResult {
  */
 export interface StreamChunk {
   /** The type of chunk. */
-  type: 
-    | 'text' 
-    | 'tool_call' 
-    | 'tool_call_delta' 
+  type:
+    | 'text'
+    | 'tool_call'
+    | 'tool_call_delta'
     | 'tool_result'
     | 'message_id'
     | 'path_info'
-    | 'error' 
+    | 'error'
     | 'finish'
     | 'unknown';
   /** The value of the chunk. */
-  value: 
-    | string 
-    | ToolCall 
-    | Partial<ToolCall> 
+  value:
+    | string
+    | ToolCall
+    | Partial<ToolCall>
     | ToolResult
-    | { 
+    | {
         reason: string;
         usage?: {
           prompt_tokens: number;
