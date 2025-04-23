@@ -1,39 +1,74 @@
 {
-  "name": "emblemvault-ai-sdk",
+  "name": "emblemvault-hustle-incognito",
+  "version": "0.1.0",
+  "description": "SDK for interacting with the Emblem Vault Hustle Incognito Agent API",
+  "author": "Emblem Vault",
+  "license": "MIT",
   "type": "module",
-  "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/esm/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "import": {
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
+      },
+      "require": {
+        "types": "./dist/cjs/index.d.ts",
+        "default": "./dist/cjs/index.js"
+      }
     }
   },
   "files": [
     "dist",
-    "src",
     "README.md"
   ],
   "scripts": {
-    "build": "tsup src/index.ts --format cjs,esm --dts --clean",
-    "lint": "eslint . --ext .ts,.tsx --report-unused-disable-directives --max-warnings 0",
-    "format": "prettier --write .",
-    "prepublishOnly": "bun run build"
+    "build:esm": "tsc --outDir ./dist/esm",
+    "build:cjs": "tsc --module commonjs --outDir ./dist/cjs",
+    "build": "npm run build:esm && npm run build:cjs",
+    "clean": "rimraf dist",
+    "prebuild": "npm run clean",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "example:cli": "node examples/simple-cli.js",
+    "lint": "eslint src/**/*.ts",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm run test && npm run lint",
+    "preversion": "npm run lint",
+    "version": "npm run format && git add -A src",
+    "postversion": "git push && git push --tags"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EmblemCompany/emblemvault-hustle-incognito.git"
+  },
+  "keywords": [
+    "emblemvault",
+    "hustle",
+    "incognito",
+    "ai",
+    "sdk",
+    "crypto",
+    "solana"
+  ],
+  "bugs": {
+    "url": "https://github.com/EmblemCompany/emblemvault-hustle-incognito/issues"
+  },
+  "homepage": "https://github.com/EmblemCompany/emblemvault-hustle-incognito#readme",
   "devDependencies": {
     "@types/bun": "latest",
-    "@types/node": "^22.14.1",
-    "@typescript-eslint/eslint-plugin": "^8.31.0",
-    "@typescript-eslint/parser": "^8.31.0",
-    "eslint": "^9.25.1",
-    "eslint-config-prettier": "^10.1.2",
-    "eslint-plugin-prettier": "^5.2.6",
+    "@types/node": "^20.11.25",
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
+    "dotenv": "^16.4.5",
+    "eslint": "^8.57.1",
     "prettier": "^3.5.3",
-    "prettier-plugin-tailwindcss": "^0.6.11",
-    "tsup": "^8.4.0"
-  },
-  "peerDependencies": {
-    "typescript": ">=5.0.0"
+    "rimraf": "^5.0.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.2",
+    "vitest": "^3.1.2"
   }
 }

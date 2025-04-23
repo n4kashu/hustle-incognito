@@ -4,6 +4,7 @@
 
 [![npm version](https://img.shields.io/npm/v/emblemvault-hustle-incognito.svg)](https://www.npmjs.com/package/emblemvault-hustle-incognito)
 [![License](https://img.shields.io/npm/l/emblemvault-hustle-incognito.svg)](LICENSE)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.4-blue)](https://www.typescriptlang.org/)
 
 ## ✨ Build an AI-powered CLI in 10 lines
 
@@ -32,6 +33,19 @@ console.log(response.content);
 - **Highly Configurable**: Advanced options when you need them
 - **Built for Testing**: Override pattern allows easy mocking
 
+## 📦 Installation
+
+```bash
+# Using npm
+npm install emblemvault-hustle-incognito
+
+# Using yarn
+yarn add emblemvault-hustle-incognito
+
+# Using pnpm
+pnpm add emblemvault-hustle-incognito
+```
+
 ## 🔑 Authentication
 
 Authentication is simple - just provide your API key when initializing the client:
@@ -40,7 +54,7 @@ Authentication is simple - just provide your API key when initializing the clien
 const client = new HustleIncognitoClient({
   apiKey: 'your-api-key-here',
   // Optional configuration
-  hustleApiUrl: 'https://custom-api-endpoint.com', // Defaults to production endpoint
+  hustleApiUrl: 'https://agenthustle.ai', // Defaults to https://agenthustle.ai
   debug: true // Enable verbose logging
 });
 ```
@@ -238,24 +252,137 @@ for await (const chunk of client.chatStream(
 }
 ```
 
-## 📦 Installation
-
-```bash
-npm install emblemvault-hustle-incognito
-
-# or
-yarn add emblemvault-hustle-incognito
-```
-
 ## 🔐 Security
 
 - Never hardcode API keys in your client code
 - Use environment variables for sensitive credentials
 - For browser applications, proxy requests through your backend
 
-## 📚 API Reference
+## 📚 Usage in Different Environments
 
-See our [full documentation](https://docs.emblemvault.ai) for detailed API reference.
+### Node.js (CommonJS)
+
+```javascript
+const { HustleIncognitoClient } = require('emblemvault-hustle-incognito');
+
+const client = new HustleIncognitoClient({ apiKey: process.env.HUSTLE_API_KEY });
+// Use the client...
+```
+
+### Node.js (ESM) / Modern JavaScript
+
+```javascript
+import { HustleIncognitoClient } from 'emblemvault-hustle-incognito';
+
+const client = new HustleIncognitoClient({ apiKey: process.env.HUSTLE_API_KEY });
+// Use the client...
+```
+
+### TypeScript
+
+```typescript
+import { HustleIncognitoClient, ChatMessage } from 'emblemvault-hustle-incognito';
+
+const client = new HustleIncognitoClient({ apiKey: process.env.HUSTLE_API_KEY });
+const messages: ChatMessage[] = [{ role: 'user', content: 'Hello' }];
+// Use the client...
+```
+
+### Next.js
+
+```typescript
+// pages/api/hustle.ts
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { HustleIncognitoClient } from 'emblemvault-hustle-incognito';
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const client = new HustleIncognitoClient({ 
+    apiKey: process.env.HUSTLE_API_KEY 
+  });
+  
+  const response = await client.chat(
+    req.body.messages,
+    { vaultId: req.body.vaultId || 'default' }
+  );
+  
+  res.status(200).json(response);
+}
+```
+
+### Browser (via bundler)
+
+```typescript
+import { HustleIncognitoClient } from 'emblemvault-hustle-incognito';
+
+// NOTE: For security, you should proxy API requests through your backend
+// rather than including API keys in client-side code
+const client = new HustleIncognitoClient({ 
+  apiKey: 'YOUR_API_KEY', // Better to fetch this from your backend
+  hustleApiUrl: '/api/hustle-proxy' // Proxy through your backend
+});
+
+// Use the client...
+```
+
+## 🛠️ Development
+
+### Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/EmblemCompany/emblemvault-hustle-incognito.git
+cd emblemvault-hustle-incognito
+
+# Install dependencies
+npm install
+
+# Build the SDK
+npm run build
+```
+
+### Testing
+
+```bash
+# Run all tests
+npm test
+
+# Watch mode for development
+npm run test:watch
+```
+
+### Running Examples
+
+```bash
+# Create a .env file with your API key
+echo "HUSTLE_API_KEY=your_api_key_here" > .env
+echo "VAULT_ID=your_vault_id" >> .env
+
+# Run the CLI example
+npm run example:cli
+```
+
+### Build Process
+
+The SDK uses a dual package approach to support both ESM and CommonJS:
+
+```bash
+# Build ESM version
+npm run build:esm
+
+# Build CommonJS version
+npm run build:cjs
+
+# Build both versions
+npm run build
+```
+
+### Publishing
+
+```bash
+# Prepare for publishing (runs tests, lint, and build)
+npm version patch # or minor, or major
+npm publish
+```
 
 ## 📄 License
 

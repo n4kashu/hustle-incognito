@@ -1036,4 +1036,3 @@ Documentation will include:
 2. **API Reference**: Generated from JSDoc comments
 3. **Examples**: Common use cases and patterns
 4. **Contributing Guide**: For future contributors
-```
