@@ -48,38 +48,6 @@ async function main() {
     // Store conversation history
     const messages = [];
     
-    // Controller for aborting streams
-    let controller = null;
-    
-    // Handle user input during streaming
-    const setupInputListener = () => {
-      if (process.stdin.isTTY) {
-        process.stdin.setRawMode(true);
-        process.stdin.on('data', (data) => {
-          // If any key is pressed during streaming and we have an active controller
-          if (controller) {
-            // Abort the stream
-            controller.abort();
-            controller = null;
-            
-            // Reset stdin mode
-            process.stdin.setRawMode(false);
-            process.stdin.removeAllListeners('data');
-            
-            console.log('\n\n[Stream interrupted by user]');
-          }
-        });
-      }
-    };
-    
-    // Cleanup input listener
-    const cleanupInputListener = () => {
-      if (process.stdin.isTTY) {
-        process.stdin.setRawMode(false);
-        process.stdin.removeAllListeners('data');
-      }
-    };
-    
     // Stream the response from the API
     async function streamResponse(messages) {
       let fullText = '';
@@ -87,19 +55,11 @@ async function main() {
       
       process.stdout.write('\nAgent: ');
       
-      // Create abort controller for this stream
-      controller = new AbortController();
-      const signal = controller.signal;
-      
-      // Setup input listener to allow interrupting the stream
-      setupInputListener();
-      
       try {
         for await (const chunk of client.chatStream({
           vaultId: VAULT_ID,
           messages,
-          processChunks: true,
-          signal
+          processChunks: true
         })) {
           if ('type' in chunk) {
             switch (chunk.type) {
@@ -119,15 +79,7 @@ async function main() {
           }
         }
       } catch (error) {
-        if (error.name === 'AbortError') {
-          console.log('\n[Stream aborted]');
-        } else {
-          console.error(`\nError during streaming: ${error.message}`);
-        }
-      } finally {
-        // Clean up the input listener
-        cleanupInputListener();
-        controller = null;
+        console.error(`\nError during streaming: ${error.message}`);
       }
       
       // Log tool usage if any
@@ -147,13 +99,11 @@ async function main() {
     // Display help information
     function showHelp() {
       console.log('\nAvailable commands:');
-      console.log('  /help           - Show this help message');
-      console.log('  /exit, /quit    - Exit the application');
-      console.log('  /stream on|off  - Enable or disable streaming mode');
-      console.log('  /debug on|off   - Enable or disable debug mode');
-      console.log('  /settings       - Show current settings');
-      console.log('\nDuring streaming:');
-      console.log('  Press any key to interrupt the stream');
+      console.log('  /help       - Show this help message');
+      console.log('  /settings   - Show current settings');
+      console.log('  /stream on|off - Toggle streaming mode');
+      console.log('  /debug on|off  - Toggle debug mode');
+      console.log('  /exit or /quit - Exit the application');
     }
     
     // Show current settings
@@ -161,26 +111,24 @@ async function main() {
       console.log('\nCurrent settings:');
       console.log(`  Streaming: ${settings.stream ? 'ON' : 'OFF'}`);
       console.log(`  Debug:     ${settings.debug ? 'ON' : 'OFF'}`);
-      console.log(`  Vault ID:  ${VAULT_ID}`);
     }
     
     // Process commands
-    function processCommand(input) {
-      const command = input.trim().toLowerCase();
-      
+    function processCommand(command) {
       if (command === '/help') {
         showHelp();
+        return true;
+      }
+      
+      if (command === '/settings') {
+        showSettings();
         return true;
       }
       
       if (command === '/exit' || command === '/quit') {
         console.log('Goodbye!');
         rl.close();
-        return true;
-      }
-      
-      if (command === '/settings') {
-        showSettings();
+        process.exit(0);
         return true;
       }
       
@@ -260,11 +208,11 @@ async function main() {
         }
         
         try {
-          let assistantResponse;
+          let assistantResponse = '';
           
           if (settings.stream) {
             // Stream the response
-            assistantResponse = await streamResponse(messages);
+            assistantResponse = await streamResponse([...messages]);
           } else {
             // Get response from the AI (non-streaming)
             const response = await client.chat(
@@ -289,7 +237,14 @@ async function main() {
           }
           
           // Add assistant response to history
-          messages.push({ role: 'assistant', content: assistantResponse });
+          if (assistantResponse && assistantResponse.length > 0) {
+            if (settings.debug) {
+              console.log(`\n[DEBUG] Adding assistant response to history: ${assistantResponse.substring(0, 50)}${assistantResponse.length > 50 ? '...' : ''}`);
+            }
+            messages.push({ role: 'assistant', content: assistantResponse });
+          } else if (settings.debug) {
+            console.log('\n[DEBUG] No assistant response to add to history');
+          }
           
           // Continue the conversation
           chat();
