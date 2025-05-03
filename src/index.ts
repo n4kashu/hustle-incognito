@@ -1,5 +1,3 @@
-console.log('Hello via Bun!');
-
 // src/index.ts
 
 // Export the client class

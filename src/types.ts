@@ -16,6 +16,8 @@ export interface HustleIncognitoClientOptions {
   fetch?: typeof fetch;
   /** Enable debug logging. */
   debug?: boolean;
+  /** Optional cookie for authentication with Vercel. */
+  cookie?: string;
 }
 
 /**

@@ -3,7 +3,6 @@ import type {
   HustleIncognitoClientOptions,
   ChatMessage,
   StreamChunk,
-  // Used in type definitions only
   HustleRequest,
   StreamOptions,
   ProcessedResponse,
@@ -16,8 +15,6 @@ const SDK_VERSION = '0.1.0';
 // Default API endpoints
 const API_ENDPOINTS = {
   PRODUCTION: 'https://agenthustle.ai',
-  STAGING: 'https://staging-agenthustle.ai',
-  LOCAL: 'http://localhost:3000',
 };
 
 /**
@@ -31,6 +28,7 @@ export class HustleIncognitoClient {
   private readonly sdkVersion: string = SDK_VERSION;
   private readonly fetchImpl: typeof fetch;
   private readonly debug: boolean;
+  private readonly cookie?: string;
 
   /**
    * Creates an instance of HustleIncognitoClient.
@@ -41,11 +39,12 @@ export class HustleIncognitoClient {
       throw new Error('API key is required.');
     }
     this.apiKey = options.apiKey;
-    this.baseUrl = options.hustleApiUrl || API_ENDPOINTS.PRODUCTION;
+    this.baseUrl = options.hustleApiUrl || (process.env && process.env['HUSTLE_API_URL']) || API_ENDPOINTS.PRODUCTION;
     this.userKey = options.userKey;
     this.userSecret = options.userSecret;
     this.fetchImpl = options.fetch || fetch;
     this.debug = options.debug || false;
+    this.cookie = options.cookie || (process.env && process.env['COOKIE']);
 
     // Debug info
     if (this.debug) {
@@ -53,6 +52,9 @@ export class HustleIncognitoClient {
         `[${new Date().toISOString()}] Emblem Vault Hustle Incognito SDK v${this.sdkVersion}`
       );
       console.log(`[${new Date().toISOString()}] Using API endpoint: ${this.baseUrl}`);
+      if (this.cookie) {
+        console.log(`[${new Date().toISOString()}] Using cookie from environment`);
+      }
     }
   }
 
@@ -74,7 +76,7 @@ export class HustleIncognitoClient {
       slippageSettings?: Record<string, number>;
       safeMode?: boolean;
       rawResponse?: boolean;
-    } = { vaultId: 'default' },
+    } = { vaultId: 'unspecified-incognito' },
     overrideFunc: Function | null = null
   ): Promise<ProcessedResponse | RawChunk[]> {
     // Implement override pattern
@@ -439,13 +441,19 @@ export class HustleIncognitoClient {
     };
 
     // Note: API key goes in the request body for this API, not in headers
-
+    headers['x-mcp-mode'] = 'true';
     if (this.userKey) {
       headers['X-User-Key'] = this.userKey;
       if (this.userSecret) {
         headers['X-User-Secret'] = this.userSecret;
       }
     }
+    
+    // Add cookie if available
+    if (this.cookie) {
+      headers['Cookie'] = this.cookie;
+    }
+    
     return headers;
   }
 }

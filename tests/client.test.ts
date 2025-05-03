@@ -1,6 +1,6 @@
 import { describe, test, expect, vi } from 'vitest';
 import { HustleIncognitoClient } from '../src';
-import type { ProcessedResponse, StreamChunk } from '../src/types';
+import type { ProcessedResponse, StreamChunk, RawChunk } from '../src/types';
 
 describe('HustleIncognitoClient', () => {
   test('should initialize with required API key', () => {
@@ -281,13 +281,13 @@ describe('HustleIncognitoClient', () => {
     client.rawStream = mockRawStream;
     
     // Collect the raw chunks when processChunks is false
-    const receivedChunks = [];
+    const receivedChunks: RawChunk[] = [];
     for await (const chunk of client.chatStream({
       vaultId: 'test-vault',
       messages: [{ role: 'user', content: 'Test' }],
       processChunks: false
     })) {
-      receivedChunks.push(chunk);
+      receivedChunks.push(chunk as RawChunk);
     }
     
     // Verify we received the raw chunks unchanged
