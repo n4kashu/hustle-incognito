@@ -39,7 +39,10 @@ export class HustleIncognitoClient {
       throw new Error('API key is required.');
     }
     this.apiKey = options.apiKey;
-    this.baseUrl = options.hustleApiUrl || (process.env && process.env['HUSTLE_API_URL']) || API_ENDPOINTS.PRODUCTION;
+    this.baseUrl =
+      options.hustleApiUrl ||
+      (process.env && process.env['HUSTLE_API_URL']) ||
+      API_ENDPOINTS.PRODUCTION;
     this.userKey = options.userKey;
     this.userSecret = options.userSecret;
     this.fetchImpl = options.fetch || fetch;
@@ -448,12 +451,12 @@ export class HustleIncognitoClient {
         headers['X-User-Secret'] = this.userSecret;
       }
     }
-    
+
     // Add cookie if available
     if (this.cookie) {
       headers['Cookie'] = this.cookie;
     }
-    
+
     return headers;
   }
 }
